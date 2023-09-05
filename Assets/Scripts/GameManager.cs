@@ -52,6 +52,8 @@ public class GameManager : MonoBehaviour
         // update current customer in customer script
         // customer feedback handled in customer script
 
+        funds += Time.deltaTime;
+
         UpdateUI();
     }
 
@@ -61,7 +63,7 @@ public class GameManager : MonoBehaviour
 
         satisfiedCounterText.text = "Satisfied: " + satisfiedCounter;
         unsatisfiedCounterText.text = "Unsatisfied: " + unsatisfiedCounter;
-        fundsText.text = "Funds: $" + funds;
+        fundsText.text = "Funds: $" + System.Math.Round(funds, 2).ToString("0.00");
     }
 
     // TODO: move menu items to SQLite database

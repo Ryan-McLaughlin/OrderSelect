@@ -5,23 +5,31 @@ public class Customer : MonoBehaviour
 {
     // todo?: Customer types ie: impatient, patient ~ affects how long they will wait per item ordered
 
+    // Collider
+    public GameObject collider;
+
     // Patience
-    [SerializeField] FloatingPatienceBar patienceBar;
+    [SerializeField] FloatingSlider patienceSlider;
     [SerializeField] FloatingTMP patienceText;
     public float maxPatience = 10f;
     public float patience;
 
+    // Order status
     private bool hasOrdered = true;
+    private MenuItem myOrder;
 
-    // Similar to grabbing a paper number slip at the deli
+    // Place in line
     private int customerNumber;
 
+    // Movement
+    public float moveSpeed = 1f;
+    private Vector3 currentPosition;
+    private Quaternion currentRotation;
 
-    private MenuItem myOrder;
 
     private void Awake()
     {
-        patienceBar = GetComponentInChildren<FloatingPatienceBar>();
+        patienceSlider = GetComponentInChildren<FloatingSlider>();
         patienceText = GetComponentInChildren<FloatingTMP>();
     }
 
@@ -32,11 +40,11 @@ public class Customer : MonoBehaviour
 
     private void Update()
     {
+        // update patience
         if (hasOrdered)
         {
-            // update patience
             patience -= Time.deltaTime;
-            patienceBar.UpdatePatienceBar(patience, maxPatience);            
+            patienceSlider.UpdateSlider(patience, maxPatience);            
             patienceText.UpdateText(System.Math.Round(patience, 1).ToString("0.0"));
 
             // check if still patient
@@ -45,6 +53,47 @@ public class Customer : MonoBehaviour
                 CancelOrder();
             }
         }
+
+        // basic movement
+        MoveRight();
+
+        // check for mouse click
+        if (Input.GetMouseButtonDown(0))
+        {
+            // Cast a ray from the mouse pointer
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
+            // Check if the ray hits the Collider of the assigned child object
+            if (Physics.Raycast(ray, out hit) && hit.transform.gameObject == collider)
+            {
+                // The assigned child object was clicked
+                // Handle the click on the childObject here
+                Debug.Log($"Clicked on: {transform.name}");
+            }
+
+        }
+
+
+    }
+
+    /// <summary>
+    /// Moves the GameObject to the right along the X-axis while maintaining its current Y and Z positions.
+    /// The GameObject's rotation is adjusted to face right during the movement.
+    /// </summary>
+    private void MoveRight()
+    {
+
+        // get current position / rotation
+        currentPosition = transform.position;
+        currentRotation = transform.rotation;
+
+        // modify Y rotation
+        currentRotation.eulerAngles = new Vector3(0f, 180f, 0f);
+
+        // update position, apply rotation
+        transform.position = new Vector3(currentPosition.x + moveSpeed * Time.deltaTime, currentPosition.y, currentPosition.z);
+        transform.rotation = currentRotation;
     }
 
     /// <summary>
@@ -98,6 +147,8 @@ public class Customer : MonoBehaviour
     /// </summary>
     private void CancelOrder()
     {
+        // remove game object
+        Destroy(gameObject);
         // TODO: cancel order
         // TODO: leave
     }

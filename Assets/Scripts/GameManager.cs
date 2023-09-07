@@ -8,6 +8,9 @@ public class GameManager : MonoBehaviour
 {
     // Customer
     private int nextCustomerNumber;
+    public CustomerGenerator customerGenerator;
+    private Vector3 customerSpawnPosition;
+    public GameObject customer;
 
     public GameObject customerPrefab;
     private GameObject customerList;
@@ -39,18 +42,16 @@ public class GameManager : MonoBehaviour
         customerList = new GameObject("Customer_List");
 
         CreateMenu();
-        for (int i = 0; i < 5; i++)
-        {
-            SpawnCustomer();
-        }
     }
 
     private void Update()
     {
         Debug.Log("GameManager.Update()");
 
-        // update current customer in customer script
-        // customer feedback handled in customer script
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            SpawnCustomer();
+        }
 
         funds += Time.deltaTime;
 
@@ -117,47 +118,53 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("GameManager.SpawnCustomer()");
 
-        // Check for prefab
-        if (customerPrefab != null)
-        {
-            // Instantiate prefab
-            GameObject customerInstance = Instantiate(customerPrefab);
-
-            // Set position and rotation
-            customerInstance.transform.position = new Vector3(Random.Range(-3f, 3f), Random.Range(-3f, 3f), 0f);
-            customerInstance.transform.rotation = Quaternion.identity;
-
-            // Set customer cube color
-            Transform customerCube = customerInstance.transform.Find("CustomerCube");
-            if (customerCube != null)
-            {
-                Renderer cubeRenderer = customerCube.GetComponent<Renderer>();
-                if (cubeRenderer != null)
-                {
-                    // Generate a random color.
-                    Color randomColor = new Color(Random.value, Random.value, Random.value);
-
-                    cubeRenderer.material.color = randomColor;
-                }
-                else { Debug.LogError("GameManager.SpawnCustomer(): cubeRenderer not found"); }
-            }
-            else { Debug.LogError("GameManager.SpawnCustomer(): CustomerCube not found"); }
-
-            // Add customer to customer list in scene
-            customerInstance.transform.parent = customerList.transform;
-
-            // TODO: give customer number to customer script
-
-            // Name the customer
-            customerInstance.name = $"Customer_{nextCustomerNumber}";            
-
-        }
-        else
-        {
-            Debug.LogError("customerPrefab == null");
-        }
+        //customerSpawnPosition = new Vector3(-5, 0, 0);
+        customer = customerGenerator.GenerateRandomCustomer();
+        customer.name = $"Customer_{nextCustomerNumber}";
+        customer.transform.parent = customerList.transform;
 
         nextCustomerNumber++;
+    }
+        //// Check for prefab
+        //if (customerPrefab != null)
+        //{
+        //    // Instantiate prefab
+        //    GameObject customerInstance = Instantiate(customerPrefab);
+
+        //    // Set position and rotation
+        //    customerInstance.transform.position = new Vector3(Random.Range(-3f, 3f), Random.Range(-3f, 3f), 0f);
+        //    customerInstance.transform.rotation = Quaternion.identity;
+
+        //    // Set customer cube color
+        //    //Transform customerCube = customerInstance.transform.Find("CustomerCube");
+        //    //if (customerCube != null)
+        //    //{
+        //    //    Renderer cubeRenderer = customerCube.GetComponent<Renderer>();
+        //    //    if (cubeRenderer != null)
+        //    //    {
+        //    //        // Generate a random color.
+        //    //        Color randomColor = new Color(Random.value, Random.value, Random.value);
+
+        //    //        cubeRenderer.material.color = randomColor;
+        //    //    }
+        //    //    else { Debug.LogError("GameManager.SpawnCustomer(): cubeRenderer not found"); }
+        //    //}
+        //    //else { Debug.LogError("GameManager.SpawnCustomer(): CustomerCube not found"); }
+
+        //    // Add customer to customer list in scene
+        //    customerInstance.transform.parent = customerList.transform;
+
+        //    // TODO: give customer number to customer script
+
+        //    // Name the customer
+        //    customerInstance.name = $"Customer_{nextCustomerNumber}";            
+
+        //}
+        //else
+        //{
+        //    Debug.LogError("customerPrefab == null");
+        //}
+
 
         //TODO: create customer constructor, put assigning of customer number there
 
@@ -174,7 +181,7 @@ public class GameManager : MonoBehaviour
         // TODO: move to Customer
         //Food requestedFood = FoodManager.GetRandomFood();
         //Customer.Instance.SetupCustomer(requestedFood);
-    }
+    
 
     //public void HandleCorrectFoodSelection()
     //{

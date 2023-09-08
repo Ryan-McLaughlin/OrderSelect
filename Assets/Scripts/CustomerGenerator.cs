@@ -32,21 +32,24 @@ public class CustomerGenerator : MonoBehaviour
         GameObject customer = Instantiate(customerPrefab, transform.position, Quaternion.identity);
 
         // Get references to the sprite renderers on the customer
-        SpriteRenderer backhairRenderer = customer.transform.Find("backhair").GetComponent<SpriteRenderer>();
-        SpriteRenderer faceRenderer = customer.transform.Find("face").GetComponent<SpriteRenderer>();
-        SpriteRenderer bodyRenderer = customer.transform.Find("body").GetComponent<SpriteRenderer>();
-        SpriteRenderer shoeRenderer = customer.transform.Find("shoe").GetComponent<SpriteRenderer>();
+        SpriteRenderer backhairRenderer  = customer.transform.Find("backhair" ).GetComponent<SpriteRenderer>();
         SpriteRenderer fronthairRenderer = customer.transform.Find("fronthair").GetComponent<SpriteRenderer>();
+        SpriteRenderer faceRenderer      = customer.transform.Find("face"     ).GetComponent<SpriteRenderer>();
+        SpriteRenderer bodyRenderer      = customer.transform.Find("body"     ).GetComponent<SpriteRenderer>();
+        SpriteRenderer shoeRenderer      = customer.transform.Find("shoe"     ).GetComponent<SpriteRenderer>();
 
         // Randomly select sprites for each part from the arrays
-        
+
+        //backhairRenderer.sprite = GetRandomSprite(backhairSprites);
+        //fronthairRenderer.sprite = GetRandomSprite(fronthairSprites);
         faceRenderer.sprite = GetRandomSprite(faceSprites);
         bodyRenderer.sprite = GetRandomSprite(bodySprites);
         shoeRenderer.sprite = GetRandomSprite(shoeSprites);
 
+        
         int randomHairIndex = Random.Range(0, backhairSprites.Length);
-        fronthairRenderer.sprite = fronthairSprites[randomHairIndex];
         backhairRenderer.sprite = backhairSprites[randomHairIndex];
+        fronthairRenderer.sprite = fronthairSprites[randomHairIndex];
 
         return customer;
     }

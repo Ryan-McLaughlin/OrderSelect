@@ -9,11 +9,10 @@ public class GameManager : MonoBehaviour
     // Customer
     private int nextCustomerNumber;
     public CustomerGenerator customerGenerator;
-    private Vector3 customerSpawnPosition;
-    public GameObject customer;
-
-    public GameObject customerPrefab;
+    private GameObject customer;
     private GameObject customerList;
+    //private Vector3 customerSpawnPosition;
+    //public GameObject customerPrefab;
 
     // User Interface
     public TextMeshProUGUI satisfiedCounterText;
@@ -58,6 +57,9 @@ public class GameManager : MonoBehaviour
         UpdateUI();
     }
 
+    /// <summary>
+    /// Updates the User Interface (UI) elements to display game statistics.
+    /// </summary>
     private void UpdateUI()
     {
         Debug.Log("GameManager.UpdateUI()");
@@ -114,6 +116,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Spawns a new customer in the game world.
+    /// </summary>
     private void SpawnCustomer()
     {
         Debug.Log("GameManager.SpawnCustomer()");
@@ -125,87 +130,113 @@ public class GameManager : MonoBehaviour
 
         nextCustomerNumber++;
     }
-        //// Check for prefab
-        //if (customerPrefab != null)
-        //{
-        //    // Instantiate prefab
-        //    GameObject customerInstance = Instantiate(customerPrefab);
 
-        //    // Set position and rotation
-        //    customerInstance.transform.position = new Vector3(Random.Range(-3f, 3f), Random.Range(-3f, 3f), 0f);
-        //    customerInstance.transform.rotation = Quaternion.identity;
+    /// <summary>
+    /// Handles the event when a customer is satisfied.
+    /// </summary>
+    /// <param name="customer">The name of the satisfied customer.</param>
+    public void CustomerSatisfied(string customerName)
+    {
+        Debug.Log($"{customerName} is Satisfied!");
+        satisfiedCounter++;
+    }
 
-        //    // Set customer cube color
-        //    //Transform customerCube = customerInstance.transform.Find("CustomerCube");
-        //    //if (customerCube != null)
-        //    //{
-        //    //    Renderer cubeRenderer = customerCube.GetComponent<Renderer>();
-        //    //    if (cubeRenderer != null)
-        //    //    {
-        //    //        // Generate a random color.
-        //    //        Color randomColor = new Color(Random.value, Random.value, Random.value);
+    /// <summary>
+    /// Handles the event when a customer is unsatisfied and issues a refund.
+    /// </summary>
+    /// <param name="customer">The name of the unsatisfied customer.</param>
+    /// <param name="refund">The refund amount issued to the customer.</param>
+    public void CustomerUnsatisfied(string customerName, float refund)
+    {
+        Debug.Log($"{ customerName } is Unsatisfied! Issued refund of ${ refund.ToString("0.00") }");
+        
+        unsatisfiedCounter++;
 
-        //    //        cubeRenderer.material.color = randomColor;
-        //    //    }
-        //    //    else { Debug.LogError("GameManager.SpawnCustomer(): cubeRenderer not found"); }
-        //    //}
-        //    //else { Debug.LogError("GameManager.SpawnCustomer(): CustomerCube not found"); }
-
-        //    // Add customer to customer list in scene
-        //    customerInstance.transform.parent = customerList.transform;
-
-        //    // TODO: give customer number to customer script
-
-        //    // Name the customer
-        //    customerInstance.name = $"Customer_{nextCustomerNumber}";            
-
-        //}
-        //else
-        //{
-        //    Debug.LogError("customerPrefab == null");
-        //}
-
-
-        //TODO: create customer constructor, put assigning of customer number there
-
-        //currentCustomer.SetCustomerNumber(nextCustomerNumber);
-
-        //currentCustomer.GetOrder(foodList);
-
-
-        // Reset timer
-        //TODO: move to customer TimeTillUnsatisfied()
-        //currentTimeRemaining = initialTimeRemaining - satisfiedCounter; // (satisfiedCounter * timeDecreasePerSatisfied);
-
-        // Customer food selection
-        // TODO: move to Customer
-        //Food requestedFood = FoodManager.GetRandomFood();
-        //Customer.Instance.SetupCustomer(requestedFood);
-    
-
-    //public void HandleCorrectFoodSelection()
-    //{
-    //    funds += 10; // Adjust the amount as needed
-    //    satisfiedCounter++;
-
-    //    UpdateUI();
-    //    NewCustomer();
-    //}
-
-    //public void HandleWrongFoodSelection()
-    //{
-    //    unsatisfiedCounter++;
-
-    //    UpdateUI();
-    //    NewCustomer();
-    //}
-
-    //private void HandleUnsatisfiedCustomer()
-    //{
-    //    unsatisfiedCounter++;
-
-    //    UpdateUI();
-    //    NewCustomer();
-    //}
-
+        // apply refund to current funds
+        funds -= refund;
+    }
 }
+
+//// Check for prefab
+//if (customerPrefab != null)
+//{
+//    // Instantiate prefab
+//    GameObject customerInstance = Instantiate(customerPrefab);
+
+//    // Set position and rotation
+//    customerInstance.transform.position = new Vector3(Random.Range(-3f, 3f), Random.Range(-3f, 3f), 0f);
+//    customerInstance.transform.rotation = Quaternion.identity;
+
+//    // Set customer cube color
+//    //Transform customerCube = customerInstance.transform.Find("CustomerCube");
+//    //if (customerCube != null)
+//    //{
+//    //    Renderer cubeRenderer = customerCube.GetComponent<Renderer>();
+//    //    if (cubeRenderer != null)
+//    //    {
+//    //        // Generate a random color.
+//    //        Color randomColor = new Color(Random.value, Random.value, Random.value);
+
+//    //        cubeRenderer.material.color = randomColor;
+//    //    }
+//    //    else { Debug.LogError("GameManager.SpawnCustomer(): cubeRenderer not found"); }
+//    //}
+//    //else { Debug.LogError("GameManager.SpawnCustomer(): CustomerCube not found"); }
+
+//    // Add customer to customer list in scene
+//    customerInstance.transform.parent = customerList.transform;
+
+//    // TODO: give customer number to customer script
+
+//    // Name the customer
+//    customerInstance.name = $"Customer_{nextCustomerNumber}";            
+
+//}
+//else
+//{
+//    Debug.LogError("customerPrefab == null");
+//}
+
+
+//TODO: create customer constructor, put assigning of customer number there
+
+//currentCustomer.SetCustomerNumber(nextCustomerNumber);
+
+//currentCustomer.GetOrder(foodList);
+
+
+// Reset timer
+//TODO: move to customer TimeTillUnsatisfied()
+//currentTimeRemaining = initialTimeRemaining - satisfiedCounter; // (satisfiedCounter * timeDecreasePerSatisfied);
+
+// Customer food selection
+// TODO: move to Customer
+//Food requestedFood = FoodManager.GetRandomFood();
+//Customer.Instance.SetupCustomer(requestedFood);
+
+
+//public void HandleCorrectFoodSelection()
+//{
+//    funds += 10; // Adjust the amount as needed
+//    satisfiedCounter++;
+
+//    UpdateUI();
+//    NewCustomer();
+//}
+
+//public void HandleWrongFoodSelection()
+//{
+//    unsatisfiedCounter++;
+
+//    UpdateUI();
+//    NewCustomer();
+//}
+
+//private void HandleUnsatisfiedCustomer()
+//{
+//    unsatisfiedCounter++;
+
+//    UpdateUI();
+//    NewCustomer();
+//}
+

@@ -6,12 +6,15 @@ public class Customer : MonoBehaviour
     // todo?: Customer types ie: impatient, patient ~ affects how long they will wait per item ordered
 
     // Collider
-    public GameObject collider;
+    public GameObject customerCollider;
+
+    // Game Manager
+    private GameManager gameManager;
 
     // Patience
     [SerializeField] FloatingSlider patienceSlider;
     [SerializeField] FloatingTMP patienceText;
-    public float maxPatience = 10f;
+    public float maxPatience = 7.5f;
     public float patience;
 
     // Order status
@@ -29,6 +32,9 @@ public class Customer : MonoBehaviour
 
     private void Awake()
     {
+        // get GameManager
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        
         patienceSlider = GetComponentInChildren<FloatingSlider>();
         patienceText = GetComponentInChildren<FloatingTMP>();
     }
@@ -50,7 +56,7 @@ public class Customer : MonoBehaviour
             // check if still patient
             if (patience <= 0)
             {
-                CancelOrder();
+                Unsatisfied();
             }
         }
 
@@ -65,16 +71,11 @@ public class Customer : MonoBehaviour
             RaycastHit hit;
 
             // Check if the ray hits the Collider of the assigned child object
-            if (Physics.Raycast(ray, out hit) && hit.transform.gameObject == collider)
+            if (Physics.Raycast(ray, out hit) && hit.transform.gameObject == customerCollider)
             {
-                // The assigned child object was clicked
-                // Handle the click on the childObject here
-                Debug.Log($"Clicked on: {transform.name}");
+                Satisfied();                
             }
-
         }
-
-
     }
 
     /// <summary>
@@ -83,7 +84,6 @@ public class Customer : MonoBehaviour
     /// </summary>
     private void MoveRight()
     {
-
         // get current position / rotation
         currentPosition = transform.position;
         currentRotation = transform.rotation;
@@ -142,15 +142,28 @@ public class Customer : MonoBehaviour
         return customerNumber;
     }
 
+    private void Satisfied()
+    {
+        //Debug.Log($"Clicked on: {transform.name}");
+
+        // inform game manager
+        gameManager.CustomerSatisfied(transform.name);
+
+        // remove game object
+        Destroy(gameObject);
+    }
+
     /// <summary>
     /// Cancels the customer's order and handles the customer leaving the game.
     /// </summary>
-    private void CancelOrder()
+    private void Unsatisfied()
     {
+        // inform game manager, get a refund
+        // TODO: update refund to price of order
+        gameManager.CustomerUnsatisfied(transform.name, 10);
+
         // remove game object
         Destroy(gameObject);
-        // TODO: cancel order
-        // TODO: leave
     }
 }
 
